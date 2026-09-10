@@ -1,7 +1,7 @@
 const UA_IBAN_LENGTH = 29;
 const UA_IBAN_PATTERN = /^UA\d{27}$/;
 
-function normalizeIbanInput(raw) {
+const normalizeIbanInput = (raw) => {
   return (raw || "").trim().toUpperCase();
 }
 
@@ -9,7 +9,7 @@ function normalizeIbanInput(raw) {
  * @param {string} value
  * @returns {{ valid: boolean, error: string|null }}
  */
-function validateIban(value) {
+const validateIban = (value) => {
   if (value.includes(" ") || value.includes("\t")) {
     return { valid: false, error: "IBAN не повинен містити пробілів. Будь ласка, введіть його як один безперервний рядок." };
   }
@@ -29,4 +29,12 @@ function validateIban(value) {
   return { valid: true, error: null };
 }
 
-module.exports = { normalizeIbanInput, validateIban, UA_IBAN_LENGTH };
+const validateTaxId = (value) => {
+  if (value.length === 10) {
+    return { valid: true, error: null }
+  }
+
+  return { valid: false, error: "Індентифікаційний код поминен містити 10 символів" };
+}
+
+module.exports = { normalizeIbanInput, validateIban, validateTaxId, UA_IBAN_LENGTH };

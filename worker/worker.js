@@ -4,6 +4,7 @@ const config = require("./config");
 const express = require("express");
 const { appendDataToFile } = require("./appendDataToFile");
 const readFile = require("./readFile");
+const cors = require("cors");
 
 const main = async() => {
   const connection = await amqplib.connect(config.rabbitmqUrl);
@@ -53,6 +54,7 @@ main().catch((error) => {
 });
 
 const app = express();
+app.use(cors());
 app.get("/submissions", async (req, res) => {
   try {
     const data = await readFile(config.dataFilePath);

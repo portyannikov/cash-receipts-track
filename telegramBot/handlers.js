@@ -1,5 +1,5 @@
 const { Markup } = require("telegraf");
-const { normalizeIbanInput, validateIban } = require("./validators");
+const { normalizeIbanInput, validateIban, validateTaxId } = require("./validators");
 
 const IBAN_PROBLEM_ACTION = "iban_problem";
 
@@ -123,6 +123,11 @@ const registerHandlers = (bot, mqPublisher) => {
       }
 
       case ACTIONS.TAX_ID: {
+        const { valid, error } = validateTaxId(text);
+        if (!valid) {
+          await ctx.reply(`${error}`);
+          return;
+        }
         ctx.session.data.tax_id = text;
         ctx.session.step = ACTIONS.PHONE;
         await ctx.reply("Будь ласка, введіть номер свого мобільного телефону.");
