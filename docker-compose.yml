@@ -1,0 +1,31 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # management UI (guest/guest by default)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  telegram-bot:
+    build: ./telegramBot
+    env_file: ./.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  storage-worker:
+    build: ./worker
+    env_file: ./.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./storage:/storage
+    ports: 
+      - 8080:8080
+    restart: unless-stopped
