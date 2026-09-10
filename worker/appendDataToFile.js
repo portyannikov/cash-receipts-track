@@ -1,15 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-
-const FIELD_NAMES = [
-  "Platform",
-  "Full Name",
-  "IBAN",
-  "IBAN Problem",
-  "Tax ID",
-  "Phone",
-  "Submitted date",
-]
+const ExcelJS = require("exceljs");
+const { FIELD_NAMES } = require("./config");
 
 const DELIMITER = ";";
 
@@ -40,9 +32,33 @@ const appendCsv = async (filePath, payload) => {
   console.log(`Appended submission to ${filePath}`);
 }
 
+const appendXlsx = async (filePath, payload) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+  const workbook = new ExcelJS.Workbook();
+  let worksheet;
+
+  if (fs.existsSync(filePath)) {
+    await workbook.xlsx.readFile(filePath);
+    worksheet = workbook.worksheets[0];
+  } else {
+    worksheet = workbook.addWorksheet("submissions");
+    worksheet.addRow(FIELD_NAMES);
+  }
+
+  worksheet.addRow(FIELD_NAMES.map((key) => payload[key] ?? ""));
+  await workbook.xlsx.writeFile(filePath);
+
+  console.log(`Appended submission to ${filePath}`);
+}
+
 const appendDataToFile = async (filePath, exportFormat, payload) => {
-  if (exportFormat === "csv") {
+  if (exportFormat === "xlsx") {
+    await appendXlsx(filePath, payload);
+  } else if (exportFormat === "csv") {
     await appendCsv(filePath, payload);
+  } else {
+    console.error(`Unknown exportFormat "${exportFormat}", submission NOT saved`);
   }
 }
 

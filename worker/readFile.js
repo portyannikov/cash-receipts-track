@@ -1,6 +1,7 @@
 const fs = require("fs/promises");
+const ExcelJS = require("exceljs");
 
-const readFile = async (filePath) => {
+const readCsv = async (filePath) => {
   const content = await fs.readFile(filePath, "utf-8");
 
   const lines = content
@@ -20,10 +21,36 @@ const readFile = async (filePath) => {
 
       return headers.reduce((result, header, index) => {
         result[header] = values[index] || "";
-
         return result;
       }, {});
     });
+};
+
+const readXlsx = async (filePath) => {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filePath);
+  const worksheet = workbook.worksheets[0];
+  if (!worksheet) return [];
+
+  const headers = worksheet.getRow(1).values.slice(1);
+  const rows = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+    const values = row.values.slice(1);
+    rows.push(
+      headers.reduce((result, header, index) => {
+        result[header] = values[index] ?? "";
+        return result;
+      }, {})
+    );
+  });
+
+  return rows;
+};
+
+const readFile = async (filePath, exportFormat) => {
+  return exportFormat === "xlsx" ? readXlsx(filePath) : readCsv(filePath);
 };
 
 module.exports = readFile;

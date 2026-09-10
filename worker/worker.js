@@ -4,6 +4,7 @@ const config = require("./config");
 const express = require("express");
 const { appendDataToFile } = require("./appendDataToFile");
 const readFile = require("./readFile");
+const ensureFileExists = require("./ensureFileExists")
 const cors = require("cors");
 
 const main = async() => {
@@ -15,6 +16,8 @@ const main = async() => {
   await channel.assertQueue(config.queueName, { durable: true });
   await channel.bindQueue(config.queueName, config.exchangeName, config.bindingPattern);
 
+  await ensureFileExists(config.dataFilePath, config.exportFormat);
+
   console.log(
     `Worker ready. exchange=${config.exchangeName} queue=${config.queueName} ` +
     `pattern=${config.bindingPattern} format=${config.exportFormat} file=${config.dataFilePath}`
@@ -25,6 +28,7 @@ const main = async() => {
 
     try {
       const payload = JSON.parse(msg.content.toString("utf-8"));
+      
       await appendDataToFile(config.dataFilePath, config.exportFormat, payload);
       channel.ack(msg);
     } catch (error) {
@@ -57,16 +61,18 @@ const app = express();
 app.use(cors());
 app.get("/submissions", async (req, res) => {
   try {
-    const data = await readFile(config.dataFilePath);
+    const data = await readFile(config.dataFilePath, config.exportFormat);
 
     res.json(data);
   } catch (error) {
     console.error("Failed to read submissions:", error);
-
-    res.status(500).json({
+    res.status(404).json({
       message: "Failed to read submissions",
     });
   }
 });
-app.get("/submissions.csv", (req, res) => res.sendFile(config.dataFilePath));
+app.get("/submissions.xlsx", (req, res) => {
+  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  res.sendFile(config.dataFilePath)
+});
 app.listen(process.env.PORT);
