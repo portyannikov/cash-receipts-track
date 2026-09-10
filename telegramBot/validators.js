@@ -29,12 +29,9 @@ const validateIban = (value) => {
   return { valid: true, error: null };
 }
 
-const validateTaxId = (value) => {
-  if (value.length === 10) {
-    return { valid: true, error: null }
-  }
-
-  return { valid: false, error: "Індентифікаційний код поминен містити 10 символів" };
+const getMfis = (value) => {
+  const mfisFromIban = value.slice(4, 10);
+  return mfisFromIban;
 }
 
-module.exports = { normalizeIbanInput, validateIban, validateTaxId, UA_IBAN_LENGTH };
+module.exports = { normalizeIbanInput, validateIban, UA_IBAN_LENGTH, getMfis };

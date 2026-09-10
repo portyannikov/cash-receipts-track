@@ -4,8 +4,10 @@ const FIELD_NAMES = [
   "Platform",
   "Full Name",
   "IBAN",
+  "Bank Name",
   "IBAN Problem",
   "Tax ID",
+  "Tax ID problem",
   "Phone",
   "Submitted date",
 ];
