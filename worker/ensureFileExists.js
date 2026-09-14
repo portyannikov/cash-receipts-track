@@ -15,10 +15,22 @@ const ensureXlsxExists = async (filePath) => {
   console.log(`Created empty file with header at ${filePath}`);
 };
 
+const resetXlsxFile = async (filePath) => {
+  const ExcelJS = require("exceljs");
+
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("submissions");
+  worksheet.addRow(FIELD_NAMES);
+  await workbook.xlsx.writeFile(filePath);
+  console.log(`Reset (cleared) file at ${filePath}`);
+};
+
 const ensureFileExists = async (filePath, exportFormat) => {
   if (exportFormat === "xlsx") {
     await ensureXlsxExists(filePath);
   }
 };
 
-module.exports = ensureFileExists;
+module.exports = { ensureFileExists, resetXlsxFile };

@@ -4,7 +4,7 @@ const config = require("./config");
 const express = require("express");
 const { appendDataToFile } = require("./appendDataToFile");
 const readFile = require("./readFile");
-const ensureFileExists = require("./ensureFileExists")
+const { ensureFileExists, resetXlsxFile } = require("./ensureFileExists")
 const cors = require("cors");
 
 const main = async() => {
@@ -59,6 +59,7 @@ main().catch((error) => {
 
 const app = express();
 app.use(cors());
+
 app.get("/submissions", async (req, res) => {
   try {
     const data = await readFile(config.dataFilePath, config.exportFormat);
@@ -71,8 +72,26 @@ app.get("/submissions", async (req, res) => {
     });
   }
 });
-app.get("/submissions.xlsx", (req, res) => {
+app.get("/submissions/file", (req, res) => {
+  const { isRemove } = req.query;
+  const shouldRemove = isRemove === "true" || isRemove === "1";
+
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-  res.sendFile(config.dataFilePath)
+
+  res.sendFile(config.dataFilePath, async (err) => {
+    if (err) {
+      console.error("Failed to send file:", err);
+      return;
+    }
+
+    if (shouldRemove) {
+      try {
+        await resetXlsxFile(config.dataFilePath);
+      } catch (error) {
+        console.error("Failed to reset file after download:", error);
+      }
+    }
+  });
 });
+
 app.listen(process.env.PORT);
