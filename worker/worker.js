@@ -59,6 +59,7 @@ main().catch((error) => {
 
 const app = express();
 app.use(cors());
+
 app.get("/submissions", async (req, res) => {
   try {
     const data = await readFile(config.dataFilePath, config.exportFormat);
@@ -71,11 +72,6 @@ app.get("/submissions", async (req, res) => {
     });
   }
 });
-app.get("/submissions.xlsx", (req, res) => {
-  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-  res.sendFile(config.dataFilePath)
-});
-
 app.get("/submissions/file", (req, res) => {
   const { isRemove } = req.query;
   const shouldRemove = isRemove === "true" || isRemove === "1";
@@ -97,4 +93,5 @@ app.get("/submissions/file", (req, res) => {
     }
   });
 });
+
 app.listen(process.env.PORT);
