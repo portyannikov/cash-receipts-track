@@ -1,0 +1,219 @@
+.action-toolbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e0e6ef;
+  border-radius: 15px;
+  box-shadow: 0 14px 36px rgba(24, 34, 48, 0.16);
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+.action-toolbar-button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #415069;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.action-toolbar-button svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 2;
+}
+
+.action-toolbar-button:hover {
+  color: #285fc9;
+  background: #edf4ff;
+  transform: translateY(-1px);
+}
+
+.action-toolbar-button:focus-visible {
+  outline: 3px solid rgba(55, 114, 232, 0.3);
+  outline-offset: 2px;
+}
+
+.action-toolbar-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.action-toolbar-spinner {
+  animation: action-toolbar-spin 800ms linear infinite;
+}
+
+@keyframes action-toolbar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.action-toolbar-divider {
+  width: 1px;
+  height: 28px;
+  margin: 5px 2px;
+  background: #e4e9f2;
+}
+
+.action-toolbar-button--logout:hover {
+  color: #c43232;
+  background: #fff0f0;
+}
+
+:root[data-theme="dark"] .action-toolbar {
+  background: rgba(24, 30, 41, 0.94);
+  border-color: #343d4c;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="dark"] .action-toolbar-button {
+  color: #c3ccda;
+}
+
+:root[data-theme="dark"] .action-toolbar-button:hover {
+  color: #a9c5ff;
+  background: #26334a;
+}
+
+:root[data-theme="dark"] .action-toolbar-divider {
+  background: #343d4c;
+}
+
+:root[data-theme="dark"] .action-toolbar-button--logout:hover {
+  color: #ff9b9b;
+  background: #3d272d;
+}
+
+.download-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(3px);
+}
+
+.download-modal {
+  position: relative;
+  width: min(100%, 440px);
+  padding: 34px 30px 28px;
+  color: #182230;
+  background: #ffffff;
+  border: 1px solid #e4e9f2;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.download-modal h2 {
+  padding-right: 28px;
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+
+.download-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #526176;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.download-modal-close:hover {
+  color: #182230;
+  background: #eef2f7;
+}
+
+.download-modal-close svg {
+  width: 19px;
+  height: 19px;
+}
+
+.download-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.download-modal-button {
+  min-width: 92px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.download-modal-button--secondary {
+  color: #354154;
+  background: #edf1f6;
+}
+
+.download-modal-button--secondary:hover {
+  background: #e1e7ef;
+}
+
+.download-modal-button--danger {
+  color: #ffffff;
+  background: #c43232;
+}
+
+.download-modal-button--danger:hover {
+  background: #a92727;
+}
+
+.download-modal-button:focus-visible,
+.download-modal-close:focus-visible {
+  outline: 3px solid rgba(55, 114, 232, 0.3);
+  outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .download-modal {
+  color: #f4f7fb;
+  background: #181e29;
+  border-color: #343d4c;
+}
+
+:root[data-theme="dark"] .download-modal-close {
+  color: #c3ccda;
+}
+
+:root[data-theme="dark"] .download-modal-close:hover {
+  color: #ffffff;
+  background: #29313e;
+}
+
+:root[data-theme="dark"] .download-modal-button--secondary {
+  color: #d5dce7;
+  background: #29313e;
+}
+
+:root[data-theme="dark"] .download-modal-button--secondary:hover {
+  background: #343e4d;
+}

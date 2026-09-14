@@ -29,3 +29,18 @@ services:
     ports: 
       - 8080:8080
     restart: unless-stopped
+
+  frontend: 
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        BACKEND_HOST: ${BACKEND_HOST}
+        BACKEND_PORT: ${BACKEND_PORT}
+    env_file: ./.env
+    depends_on:
+      - storage-worker
+    ports:
+      - 5173:80
+    restart: unless-stopped
